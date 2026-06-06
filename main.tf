@@ -25,40 +25,37 @@ provider "aws" {
   region = "us-east-1"
 }
 
-
 ########################################
-# RDS Subnet Group (FIXED: 2 AZs)
+# Network Module
 ########################################
-resource "aws_db_subnet_group" "db_subnet_group" {
-  name = "db-subnet-group"
+module "network" {
+  source = "./modules/network"
 
-  subnet_ids = [
-    aws_subnet.public.id,
-    aws_subnet.public_2.id
-  ]
-
-  tags = {
-    Name = "db-subnet-group"
-  }
+  vpc_cidr             = "10.0.0.0/16"
+  public_subnet_1_cidr = "10.0.1.0/24"
+  public_subnet_2_cidr = "10.0.2.0/24"
+  az_1                 = "us-east-1a"
+  az_2                 = "us-east-1b"
 }
 
 ########################################
-# RDS Instance (MySQL)
+# Compute Module
 ########################################
-resource "aws_db_instance" "db" {
-  allocated_storage    = 20
-  engine               = "mysql"
-  engine_version       = "8.0"
-  instance_class       = "db.t3.micro"
-  db_name              = "appdb"
-  username             = "admin"
-  password             = "password123"
-  publicly_accessible  = true
-  skip_final_snapshot  = true
+module "compute" {
+  source = "./modules/compute"
 
-  db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
+  vpc_id    = module.network.vpc_id
+  subnet_id = module.network.public_subnet_ids[0]
+}
 
-  tags = {
-    Name = "terraform-rds"
-  }
+########################################
+# Database Module
+########################################
+module "database" {
+  source = "./modules/database"
+
+  subnet_ids  = module.network.public_subnet_ids
+  db_name     = "appdb"
+  db_username = "admin"
+  db_password = "password123"
 }
