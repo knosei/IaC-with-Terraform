@@ -1,4 +1,4 @@
-# AWS Infrastructure as Code with Terraform
+# Infrastructure as Code with Terraform
 
 ## Project Overview
 
@@ -20,47 +20,36 @@ The infrastructure includes networking, compute, database resources, remote stat
 
 ## Architecture
 
-[Insert Architecture Diagram Here]
+
+![Architecture Diagram](public/architecture.png)
 
 ### Architecture Components
 
 The deployed infrastructure consists of:
 
 * Amazon VPC
-* Public Subnets across multiple Availability Zones
+* Public Subnets
 * Internet Gateway
-* Route Tables and Associations
 * Security Groups
 * Amazon EC2 Instance hosting a web application
-* Amazon RDS MySQL Database
 * Amazon S3 Backend for Terraform State
 * Amazon DynamoDB State Locking Table
 
 ### Infrastructure Flow
 
-```text
-Internet
-    │
-    ▼
-Internet Gateway
-    │
-    ▼
-Public Subnets
-    │
- ┌──┴──┐
- ▼     ▼
-EC2   RDS
-    │
-    ▼
-Terraform State
-(S3 + DynamoDB)
-```
+1. Engineer runs terraform init, terraform plan, and
+terraform apply.
+2. Terraform initializes providers and configuration.
+3. Terraform reads and writes state in Amazon S3.
+4. Terraform uses DynamoDB to lock state during apply.
+5. Terraform provisions the Amazon VPC.
+6. Terraform creates the Amazon EC2 instance.
+7. Terraform creates and attaches Security Groups.
+8. Terraform deploys resources into a public subnet.
 
 ---
 
 ## Technologies Used
-
-### Cloud Services
 
 * AWS VPC
 * AWS EC2
@@ -68,17 +57,9 @@ Terraform State
 * AWS IAM
 * AWS S3
 * AWS DynamoDB
-
-### Infrastructure as Code
-
 * Terraform
-* Terraform AWS Provider
-
-### Development Tools
-
 * Git
 * GitHub
-* Visual Studio Code
 * AWS CLI
 
 ---
@@ -122,25 +103,10 @@ terraform-aws-iac/
 
 ## Key Features
 
-### Infrastructure as Code
-
-All AWS resources are defined declaratively using Terraform configuration files.
-
-### Remote State Management
-
-Terraform state is stored remotely in Amazon S3 with state locking provided by DynamoDB.
-
-### Modular Design
-
-Infrastructure is separated into reusable modules:
-
-* Network Module
-* Compute Module
-* Database Module
-
-### Automated Dependency Management
-
-Terraform automatically determines resource creation order through resource references and dependency graphs.
+- **Infrastructure as Code** - All AWS resources are defined declaratively using Terraform configuration files.
+- **Remote State Management** - Terraform state is stored remotely in Amazon S3 with state locking provided by DynamoDB.
+- **Modular Design** - Infrastructure is separated into reusable modules; Network, Compute and Database Modules
+- **Automated Dependency Management** - Terraform automatically determines resource creation order through resource references and dependency graphs.
 
 ### Repeatable Deployments
 
@@ -166,43 +132,29 @@ terraform plan
 
 ### Terraform Plan
 
-[Insert Screenshot of Successful Terraform Plan]
+![Terraform Plan](public/terraformplan.png)
 
 ### Successful Terraform Apply
 
-[Insert Screenshot of Successful Terraform Apply]
+![Terraform Apply](public/terraformapply.png)
 
 ### AWS Resources Created
 
-[Insert Screenshot of AWS Resources Dashboard]
+![EC2Instance](public/EC2Instance.png)
 
 ### Running Web Application
 
-[Insert Screenshot of Web Application in Browser]
+![WebPage](public/WebPage.png)
 
 ---
 
 ## Challenges Solved
 
-### Terraform State Management
-
-Learned how Terraform tracks infrastructure using state files and why remote state is essential for team environments.
-
-### Remote Backend Configuration
-
-Configured Amazon S3 and DynamoDB to securely manage Terraform state and prevent concurrent infrastructure modifications.
-
-### Infrastructure Refactoring
-
-Refactored a monolithic Terraform configuration into reusable modules while preserving existing infrastructure.
-
-### State Migration
-
-Used Terraform state migration techniques to ensure resources were not recreated during module refactoring.
-
-### Git and Terraform Best Practices
-
-Resolved issues related to accidentally committing Terraform provider binaries and implemented proper `.gitignore` configuration to prevent future repository bloat.
+- **Git and Terraform Best Practices** - Resolved issues related to accidentally committing Terraform provider binaries and implemented proper `.gitignore` configuration to prevent future repository bloat.
+- **Terraform State Management** - Learned how Terraform tracks infrastructure using state files and why remote state is essential for team environments.
+- **Remote Backend Configuration** - Configured Amazon S3 and DynamoDB to securely manage Terraform state and prevent concurrent infrastructure modifications.
+- **Infrastructure Refactoring** - Refactored a monolithic Terraform configuration into reusable modules while preserving existing infrastructure.
+- **State Migration** - Used Terraform state migration techniques to ensure resources were not recreated during module refactoring.
 
 ---
 
@@ -251,3 +203,19 @@ The final solution delivers:
 * Modular Terraform architecture
 * Automated infrastructure provisioning
 * Production-style Infrastructure as Code workflows
+
+---
+
+## 🤝 Connect With Me
+
+<p align="center">
+<a href="mailto:knokwaku99@gmail.com">
+<img src="https://img.shields.io/badge/EMAIL-KNOKWAKU99%40GMAIL.COM-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"/>
+</a>
+
+<a href="https://www.linkedin.com/in/knosei/">
+<img src="https://img.shields.io/badge/LINKEDIN-KNOSEI%20-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+</a>
+</p>
+
+---
