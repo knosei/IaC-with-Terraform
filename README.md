@@ -2,7 +2,8 @@
 
 ## Project Overview
 
-This project demonstrates how to provision and manage AWS infrastructure using Terraform following Infrastructure as Code (IaC) principles.
+A growing technology company manages its AWS infrastructure manually through the AWS Console. As the environment grows, this approach starts causing serious problems:
+Infrastructure changes are undocumented, Environments drift over time, Reproducing setups across accounts is difficult, Rollbacks are risky and error-prone and Collaboration between engineers is inconsistent
 
 The goal was to replace manual AWS Console operations with a repeatable, version-controlled, and automated deployment process. All infrastructure is defined in code, tracked through Terraform state, and organized using reusable modules.
 
