@@ -109,24 +109,59 @@ terraform-aws-iac/
 - **Modular Design** - Infrastructure is separated into reusable modules; Network, Compute and Database Modules
 - **Automated Dependency Management** - Terraform automatically determines resource creation order through resource references and dependency graphs.
 
-### Repeatable Deployments
+## Deployment
+### Prerequisites
 
-The entire environment can be recreated consistently using:
+- [Terraform](https://developer.hashicorp.com/terraform/install) >= 1.x
+- AWS CLI configured with credentials (`aws configure`)
+- An AWS account with permissions to create VPC, EC2, RDS, S3, and DynamoDB resources
+
+### 1. Create the remote state backend
+
+The S3 bucket and DynamoDB table aren't managed by this configuration — they must exist before Terraform can use them:
+
+```bash
+aws s3api create-bucket --bucket <your-unique-bucket-name> --region us-east-1
+aws s3api put-bucket-versioning --bucket <your-unique-bucket-name> --versioning-configuration Status=Enabled
+
+aws dynamodb create-table \
+  --table-name terraform-state-lock \
+  --attribute-definitions AttributeName=LockID,AttributeType=S \
+  --key-schema AttributeName=LockID,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST
+```
+
+### 2. Update configuration values
+
+Open the root `main.tf` and update:
+- The `bucket` value in the `terraform { backend "s3" {...} }` block, to match the bucket you created in step 1.
+- Optionally, the `db_password` value in the `module "database"` block — it's currently hardcoded to a placeholder value for learning purposes 
+
+### 3. Initialise, plan, and apply
 
 ```bash
 terraform init
 terraform plan
 terraform apply
 ```
+Review the plan output before typing `yes` — it lists exactly what will be created.
 
-### Safe Infrastructure Changes
-
-Changes are reviewed before deployment using:
+### 4. Access the web application
 
 ```bash
-terraform plan
+aws ec2 describe-instances \
+  --filters "Name=tag:Name,Values=terraform-web-instance" \
+  --query "Reservations[].Instances[].PublicIpAddress" \
+  --output text
 ```
 
+Open `http://<EC2_PUBLIC_IP>.` in a browser to see the deployed page.
+
+### 5. Tear down
+
+```bash
+terraform destroy
+```
 ---
 
 ## Deployment Verification
